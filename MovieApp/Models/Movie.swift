@@ -5,14 +5,13 @@
 //  Created by George Digmelashvili on 5/11/21.
 //
 
-
 import UIKit
 
 struct MovieData: Codable {
     let page: Int
     let results: [Movie]
     let totalPages, totalResults: Int
-    
+
     enum CodingKeys: String, CodingKey {
         case page = "page"
         case results
@@ -32,8 +31,7 @@ struct Movie: Codable {
     let video: Bool?
     let voteAverage: Double?
     let voteCount: Int?
-    
-    
+
     enum CodingKeys: String, CodingKey {
         case adult = "adult"
         case backdropPath = "backdrop_path"
@@ -51,7 +49,7 @@ struct Movie: Codable {
 }
 
 extension Movie {
-    
+
     init(_ movie: UserMovies) {
         self.id = Int(movie.iD)
         self.title = movie.title
@@ -69,4 +67,3 @@ extension Movie {
         self.adult = nil
     }
 }
-

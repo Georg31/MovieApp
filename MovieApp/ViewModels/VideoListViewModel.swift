@@ -7,48 +7,48 @@
 
 import Foundation
 
-struct VideoListViewModel{
-    
+struct VideoListViewModel {
+
     var videos = [VideoViewModel]()
-    var videoCount: Int{
+    var videoCount: Int {
         return videos.count
     }
-    func videoAtIndex(_ index: Int) -> VideoViewModel{
+    func videoAtIndex(_ index: Int) -> VideoViewModel {
         return self.videos[index]
     }
 }
-    
-extension VideoListViewModel{
-    
+
+extension VideoListViewModel {
+
     init(data: VideoData) {
         self.videos = data.results.map({VideoViewModel($0)})
     }
 }
 
-struct VideoViewModel{
-    
+struct VideoViewModel {
+
     private let video: Video
 }
 
-extension VideoViewModel{
-    
+extension VideoViewModel {
+
     init(_ video: Video) {
         self.video = video
     }
-    
-    var name: String{
+
+    var name: String {
         return video.name
     }
-    
-    var type: String{
+
+    var type: String {
         return video.type
     }
-    
-    var site: String{
+
+    var site: String {
         return video.site
     }
-    
-    var key: String{
+
+    var key: String {
         return video.key
     }
 }

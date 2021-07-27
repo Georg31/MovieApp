@@ -15,8 +15,8 @@ enum Type: String, CaseIterable {
     case search
     case similar = "/similar?"
     case video = "/videos?"
-    
-    var StringValue: String{
+
+    var stringValue: String {
         switch self {
         case .topRated:
             return "Top Rated"
@@ -37,24 +37,24 @@ enum Type: String, CaseIterable {
 }
 
 class ApiCall {
-    
+
     static let shared = ApiCall()
     private var movieID = ""
-    private var movieType: Type = Type.topRated{
-        didSet{
-            if movieType == .search{
+    private var movieType: Type = Type.topRated {
+        didSet {
+            if movieType == .search {
                 url = "\(Constants.search)&query=\(searchMoive)&api_key=\(ApiKeys.apiKey)&page=1"
-            } else if movieType == .similar{
+            } else if movieType == .similar {
                 url = "\(Constants.url)\(movieID)\(movieType.rawValue)&api_key=\(ApiKeys.apiKey)&page=1"
-            } else{url = "\(Constants.url)\(movieType.rawValue)&api_key=\(ApiKeys.apiKey)&page=1"}
+            } else {url = "\(Constants.url)\(movieType.rawValue)&api_key=\(ApiKeys.apiKey)&page=1"}
         }
     }
     private lazy var url = "\(Constants.url)\(movieType.rawValue)&api_key=\(ApiKeys.apiKey)&page=1"
     private var searchMoive = ""
-    
-    func getVideo(movieID: Int, completion: @escaping (VideoListViewModel) -> Void){
+
+    func getVideo(movieID: Int, completion: @escaping (VideoListViewModel) -> Void) {
         self.movieID = String(movieID)
-        guard let url = URL(string:"\(Constants.url)\(movieID)\(Type.video.rawValue)&api_key=\(ApiKeys.apiKey)") else{return}
+        guard let url = URL(string: "\(Constants.url)\(movieID)\(Type.video.rawValue)&api_key=\(ApiKeys.apiKey)") else {return}
         let resource = Resource<VideoData>(url: url)
         Webservice.load(resource: resource) { result in
             switch result {
@@ -65,7 +65,7 @@ class ApiCall {
             }
         }
     }
-    
+
     func fetchSimilars(movieID: Int, completion: @escaping (MovieListViewModel) -> Void) {
         self.movieID = String(movieID)
         self.movieType = .similar
@@ -73,11 +73,11 @@ class ApiCall {
             completion(movies)
         }
     }
-    
+
     func searchMoives(name: String, completion: @escaping (MovieListViewModel) -> Void) {
         searchMoive = name
         movieType = .search
-        guard let url = URL(string:url) else {return}
+        guard let url = URL(string: url) else {return}
         let resource = Resource<MovieData>(url: url)
         Webservice.load(resource: resource) { result in
             switch result {
@@ -88,10 +88,10 @@ class ApiCall {
             }
         }
     }
-    
+
     func fetchNextPage(_ page: Int, type: Type, completion: @escaping (MovieListViewModel) -> Void) {
         movieType = type
-        guard let url = URL(string:"\(url)&page=\(page)") else{return}
+        guard let url = URL(string: "\(url)&page=\(page)") else {return}
         let resource = Resource<MovieData>(url: url)
         Webservice.load(resource: resource) { result in
             switch result {
@@ -102,10 +102,10 @@ class ApiCall {
             }
         }
     }
-    
+
     func fetchMovies(type: Type = .topRated, completion: @escaping (MovieListViewModel) -> Void) {
         movieType = type
-        guard let url = URL(string:"\(url)") else{return}
+        guard let url = URL(string: "\(url)") else {return}
         let resource = Resource<MovieData>(url: url)
         Webservice.load(resource: resource) { result in
             switch result {

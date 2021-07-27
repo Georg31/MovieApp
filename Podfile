@@ -8,5 +8,6 @@ target 'MovieApp' do
   # Pods for MovieApp
 pod "youtube-ios-player-helper", "~> 1.0.3"
 pod 'MBProgressHUD'
+pod 'SwiftLint'
 
 end

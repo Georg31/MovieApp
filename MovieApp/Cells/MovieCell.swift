@@ -7,54 +7,54 @@
 
 import UIKit
 
-protocol Favourites {
+protocol Favourites: AnyObject {
     func addToFavourite(_ movie: MovieViewModel)
     func removeFavourite(_ movie: MovieViewModel)
 }
 
 class MovieCell: UICollectionViewCell {
-    
+
     @IBOutlet weak var favouriteButton: UIButton!
     @IBOutlet weak var ratingView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     private lazy var ratingV = CustomRatingView(frame: ratingView.bounds)
-    var favDelegate: Favourites?
-    
+    weak var favDelegate: Favourites?
+
     var movie: MovieViewModel! {
-        didSet{
+        didSet {
             favImg()
             ratingV.rating = movie.voteAverage
             ratingView.addSubview(ratingV)
-            if let img = movie.poster{
+            if let img = movie.poster {
                 self.imageView.image = img
-            } else{
+            } else {
                 movie.posterPath.downloadImage { img in
                     self.imageView.image = img
                 }
             }
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code\
-        
+
     }
-    
+
     @IBAction func favouriteButtonClick(_ sender: UIButton) {
         self.movie.isFavourite.toggle()
         favImg()
-        if self.movie.isFavourite{
+        if self.movie.isFavourite {
             self.movie.poster = imageView.image
             favDelegate?.addToFavourite(self.movie)
-        } else{
+        } else {
             favDelegate?.removeFavourite(self.movie)
         }
     }
-    
-    private func favImg(){
+
+    private func favImg() {
         let img = movie.isFavourite ? UIImage(named: "star.fill") : UIImage(named: "star")
         self.favouriteButton.setImage(img, for: .normal)
     }
-    
+
 }

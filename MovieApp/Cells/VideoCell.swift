@@ -11,13 +11,13 @@ import youtube_ios_player_helper
 class VideoCell: UICollectionViewCell {
 
     @IBOutlet weak var videoView: YTPlayerView!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-    
-    func setupVideo(_ video: VideoViewModel){
+
+    func setupVideo(_ video: VideoViewModel) {
         videoView.load(withVideoId: video.key)
     }
 
