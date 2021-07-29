@@ -20,7 +20,7 @@ class FilterCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        if selected { self.typeLabel.textColor = .blue} else { self.typeLabel.textColor = .systemOrange}
+        if selected { self.typeLabel.textColor = .systemBlue} else { self.typeLabel.textColor = .systemOrange}
 
     }
 
