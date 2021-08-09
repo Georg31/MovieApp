@@ -18,6 +18,7 @@ class CustomFilterView: UIView {
     private var filterView: UIView!
     private var fadeView: UIView!
     var datasource = [Type]()
+    var translationX = CGFloat()
 
     var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
@@ -41,16 +42,24 @@ class CustomFilterView: UIView {
 
     private func setupView() {
         self.backgroundColor = .none
-        filterView = UIView(frame: CGRect(x: self.frame.width / 3, y: self.frame.minY, width: self.frame.width/3 + self.frame.width, height: self.frame.height))
-        // filterView.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        fadeView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY, width: self.filterView.frame.minX, height: self.frame.height))
+
+        filterView = UIView(frame: CGRect(x: self.frame.width / 3, y: self.frame.minY,
+                                       width: self.frame.width/3 + self.frame.width, height: self.frame.height))
+        fadeView = UIView(frame: CGRect(x: self.frame.minX, y: self.frame.minY,
+                                   width: self.filterView.frame.minX, height: self.frame.height))
+
         fadeView.backgroundColor = .black
         fadeView.alpha = 0
+
         let tap = UITapGestureRecognizer(target: self, action: #selector(hideFilter(_:)))
         fadeView.addGestureRecognizer(tap)
+
         self.addSubview(filterView)
         self.addSubview(fadeView)
+
         self.frame.origin.x = self.frame.maxX
+        let drag = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
+        self.addGestureRecognizer(drag)
 
         tableView = UITableView(frame: filterView.bounds)
         tableView.separatorStyle = .none
@@ -63,8 +72,8 @@ class CustomFilterView: UIView {
 
     func showFilter() {
         UIView.animate(withDuration: 0.7) {
-            self.frame.origin.x = 0
             self.parentViewController?.navigationController?.isNavigationBarHidden = true
+            self.frame.origin.x = 0
         } completion: { [self] _ in
             UIView.animate(withDuration: 0.2) {
                 fadeView.alpha = 0.5
@@ -79,6 +88,32 @@ class CustomFilterView: UIView {
         UIView.animate(withDuration: 0.7) {
             self.frame.origin.x = self.frame.maxX
             self.parentViewController?.navigationController?.isNavigationBarHidden = false
+        }
+    }
+
+    @objc func swipe(_ sender: UIPanGestureRecognizer) {
+
+        let loc = sender.location(in: self).x - translationX
+
+        switch sender.state {
+
+        case .began:
+            self.fadeView.alpha = 0
+            translationX = sender.location(in: self).x
+
+        case .changed:
+            if !(frame.origin.x > -1) { sender.state = .ended}
+            self.frame.origin.x += loc
+
+        case .ended:
+            if self.frame.origin.x > 70 {
+                self.hideFilter()
+            } else {
+                self.showFilter()
+            }
+
+        default:
+            break
         }
     }
 

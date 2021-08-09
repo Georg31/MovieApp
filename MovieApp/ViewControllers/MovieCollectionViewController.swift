@@ -22,7 +22,7 @@ class MovieCollectionViewController: UICollectionViewController {
     private var typeChanged = true
     private var index = 0
     private var movieDataSource: CollectionViewDataSource<MovieCell, MovieViewModel>!
-
+    var translationX = CGFloat()
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
@@ -34,6 +34,7 @@ class MovieCollectionViewController: UICollectionViewController {
         configSearch()
         configFilterView()
         configRefresh()
+        swipeMenuGesture()
         self.navigationItem.title = typeOfMovie.stringValue
     }
 
@@ -69,6 +70,12 @@ class MovieCollectionViewController: UICollectionViewController {
         self.collectionView.dataSource = self.movieDataSource
         self.collectionView.delegate = self
 
+    }
+
+    private func swipeMenuGesture() {
+        let pan = UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))
+        pan.direction = .left
+        self.collectionView.addGestureRecognizer(pan)
     }
 
     private func fetchMovies() {
@@ -117,6 +124,10 @@ extension MovieCollectionViewController {
     }
 
     @objc func filterMenu(_ sender: UIBarButtonItem) {
+        filterView.showFilter()
+    }
+
+    @objc func swipe(_ sender: UISwipeGestureRecognizer) {
         filterView.showFilter()
     }
 
