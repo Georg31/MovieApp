@@ -18,7 +18,7 @@ class CustomFilterView: UIView {
     private var filterView: UIView!
     private var fadeView: UIView!
     var datasource = [Type]()
-    var translationX = CGFloat()
+    private var translationX = CGFloat()
 
     var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self

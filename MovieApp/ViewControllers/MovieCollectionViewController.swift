@@ -22,7 +22,7 @@ class MovieCollectionViewController: UICollectionViewController {
     private var typeChanged = true
     private var index = 0
     private var movieDataSource: CollectionViewDataSource<MovieCell, MovieViewModel>!
-    var translationX = CGFloat()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
