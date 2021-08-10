@@ -102,7 +102,7 @@ class CustomFilterView: UIView {
             translationX = sender.location(in: self).x
 
         case .changed:
-            if !(frame.origin.x > -1) { sender.state = .ended}
+            if frame.origin.x < 0 { sender.state = .ended}
             self.frame.origin.x += loc
 
         case .ended:
