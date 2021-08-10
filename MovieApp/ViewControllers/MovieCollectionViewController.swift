@@ -54,9 +54,9 @@ class MovieCollectionViewController: UICollectionViewController {
     private func configFilterView() {
         self.filterMoviesButton.action = #selector(filterMenu(_:))
         self.filterMoviesButton.target = self
-        filterView = CustomFilterView(frame: super.view.frame)
-        filterView.delegate = self
-        filterView.datasource = Type.allCases[0...3].map({$0})
+        self.filterView = CustomFilterView(frame: super.view.frame)
+        self.filterView.delegate = self
+        self.filterView.datasource = Type.allCases[0...3].map({$0})
         self.view.addSubview(filterView)
     }
 
@@ -83,13 +83,13 @@ class MovieCollectionViewController: UICollectionViewController {
         if typeChanged || refreshing {
             index = 0
             MBProgressHUD.showAdded(to: self.view, animated: true)
-            service.fetchMovies(type: typeOfMovie) { [self] movies in
+            service.fetchMovies(type: typeOfMovie) { [self] mov in
                 MBProgressHUD.hide(for: self.view, animated: true)
-                self.movies = movies
-                self.movies?.checkFavourite()
-                self.movieDataSource.updateItem(self.movies!.movies)
+                mov.checkFavourite()
+                movies = mov
+                movieDataSource.updateItem(movies!.movies)
 
-                let indexPath = self.movies?.indexPaths(index)
+                let indexPath = movies?.indexPaths(index)
                 if !refreshing {
                     collectionView.insertItems(at: indexPath!)
                 } else {
@@ -102,9 +102,9 @@ class MovieCollectionViewController: UICollectionViewController {
         } else {
             if movies?.nextPage == movies?.totalPages { return}
             service.fetchNextPage(movies!.nextPage, type: typeOfMovie) { [self] mov in
-                self.movies?.addMovies(mov)
-                self.movies?.checkFavourite()
-                self.movieDataSource.appendItem(mov.movies)
+                mov.checkFavourite()
+                movies.addMovies(mov)
+                movieDataSource.appendItem(mov.movies)
                 collectionView.insertItems(at: movies!.indexPaths(index))
                 index = movies!.numberOfRows
             }
@@ -190,8 +190,8 @@ extension MovieCollectionViewController: UISearchResultsUpdating {
         service.searchMoives(name: name) { [self] movie in
             typeOfMovie = .search
             index = 0
+            movie.checkFavourite()
             movies = movie
-            self.movies?.checkFavourite()
             self.movieDataSource.updateItem(self.movies!.movies)
             collectionView.reloadData()
             typeChanged = false
@@ -205,14 +205,14 @@ extension MovieCollectionViewController: UICollectionViewDelegateFlowLayout {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: Constants.detailsVC) as DetailsViewController
-        viewC.movie = self.movieDataSource.item[indexPath.row]
+        viewC.movie = self.movieDataSource.atIndex(indexPath)
         viewC.favDelegate = self
         self.navigationController?.pushViewController(viewC, animated: true)
 
     }
 
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if (indexPath.row == self.movieDataSource.item.count - 10 ), typeOfMovie != .favourites {
+        if (indexPath.row == self.movieDataSource.count() - 10 ), typeOfMovie != .favourites {
             self.fetchMovies()
         }
     }

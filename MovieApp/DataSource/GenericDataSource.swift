@@ -10,7 +10,7 @@ import UIKit
 class CollectionViewDataSource<CellType, ViewModel>: NSObject, UICollectionViewDataSource where CellType: UICollectionViewCell {
 
     private let cellIdentifier: String
-    var item: [ViewModel]
+    private var item: [ViewModel]
     private let configureCell: (CellType, ViewModel) -> Void
 
     init(cellIdentifier: String, item: [ViewModel], configureCell: @escaping (CellType, ViewModel) -> Void) {
@@ -18,6 +18,14 @@ class CollectionViewDataSource<CellType, ViewModel>: NSObject, UICollectionViewD
         self.item = item
         self.configureCell = configureCell
 
+    }
+
+    func count() -> Int {
+        return self.item.count
+    }
+
+    func atIndex(_ index: IndexPath) -> ViewModel {
+        return self.item[index.row]
     }
 
     func updateItem(_ item: [ViewModel]) {
